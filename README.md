@@ -1,3 +1,9 @@
+## Contact and pause update
+
+Combat now starts immediately on new contact, then repeats every 0.32 seconds per pair; re-entry is immediate. A 16px contact tolerance accounts for sprite edges. Initial beginner protection ends when the player advances toward a contacting rival; retreating retains it. Protected armies show a shield. Respawn protection lasts 3 seconds. The pause menu offers Resume (same session) and New Game (explicit fresh world).
+
+55 tests pass, including contact timing, protection and 600 respawns. Pause/New Game was verified in the browser.
+
 ## Infinite session iteration
 
 The session is one human + 11 bots. Death ends an individual run, never the world. Normal respawn is automatic after 1.5 seconds, on the same map. Existing Pause freezes the local session intentionally; tab closure/reload starts a new session. Records are memory-only.
