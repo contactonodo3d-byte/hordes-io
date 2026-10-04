@@ -1,3 +1,19 @@
+## Infinite session iteration
+
+The session is one human + 11 bots. Death ends an individual run, never the world. Normal respawn is automatic after 1.5 seconds, on the same map. Existing Pause freezes the local session intentionally; tab closure/reload starts a new session. Records are memory-only.
+
+- `src/player-lifecycle.js`: stable player IDs, death cleanup, safe spawn search (64 candidates maximum), respawn and protection.
+- `src/run-stats.js`: current army, peak, survival, kills; personal best army/time/kills; one previous-run snapshot and finished-run count.
+- `src/rewarded-recovery.js`: provider-independent, one-use offer tokens, probability, percentage and cooldown; disabled by default.
+- `Simulation(random, faction, difficulty, options)` accepts `rewardedRecoveryEnabled`, `rewardedRecoveryChance`, `rewardedRecoveryPercentage`, `rewardedRecoveryCooldown`, and `respawnDelay`.
+- Provider hook: `sim.lifecycle.recovery.offers.get(player.id)` then `complete(player, offer.token, success)`. Call completion before scheduled normal respawn; stale/replayed tokens are rejected. Successful completion sets the recovery army for the scheduled respawn. Default 50% is measured from the previous run’s peak army (so gradual attrition does not reduce recovery to a single soldier), with normal starting army as minimum.
+- Development only: open `/?debugRecovery`. This enables opportunities at 100% chance, uses a 20-second manual inspection window, and displays DEBUG end-run and simulated-completion buttons. End-run grants 96 test troops first. Normal play has neither debug buttons nor recovery opportunities. Cooldown remains 120 seconds.
+- No new progression or ads. The existing difficulty selector is reused; difficulty stays fixed during the session. Legacy saved difficulty training values remain readable, but death does not advance them.
+
+Validation: 51 tests including A–I scenarios, 50 death cycles for all 12 identities (600 respawns), continuing opponent combat, safe-spawn fallback, one-use recovery and cooldown. Static build approximately 0.159 MB.
+
+Known limitations: local bots, no backend/session persistence; a map-covering army can make all spawn candidates unsafe, so temporary combat protection provides the fallback. Long-session balance needs playtesting. Existing compressed source style and unused legacy result translations/CSS remain technical debt; no broad formatting rewrite was performed.
+
 # Hordes.io — prototype 07
 
 Play: https://contactonodo3d-byte.github.io/hordes-io/
